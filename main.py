@@ -25,11 +25,11 @@ with sr.WavFile(output_file) as source:
 
 recognized_speech = str(r.recognize_azure(audio, key=os.environ.get('SPEECH_KEY'), location=os.environ.get('SPEECH_REGION'), language="en-US", show_all=False,))
 try:
-    print("Google Speech Recognition thinks you said " + recognized_speech)
+    print("This is what I was able to understand: " + recognized_speech)
 except sr.UnknownValueError:
-    print("Google Speech Recognition could not understand audio")
+    print("I could not understand the audio")
 except sr.RequestError as e:
-    print("Could not request results from Google Speech Recognition service; {0}".format(e))
+    print("Could not request results from Azure Speech Recognition service; {0}".format(e))
 
 # Download the nltk data if it doesn't exist
 current_user = os.getlogin()
