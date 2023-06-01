@@ -1,4 +1,4 @@
-import ffmpeg, os, nltk, time
+import ffmpeg, os, nltk
 from pytube import YouTube
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
@@ -16,10 +16,8 @@ audio_stream.download(output_path="./audio", filename="audio.mp4")
 # Convert the video to wav format
 input_file = "./audio/audio.mp4"
 output_file = "./audio/output.wav"
+ffmpeg.input(input_file).output(output_file, format='wav', loglevel="quiet").run()
 
-if not os.path.exists(output_file):
-    ffmpeg.input(input_file).output(output_file, format='wav').run()
-        
 # Recognize the speech from the audio file
 r = sr.Recognizer()
 with sr.WavFile(output_file) as source:
@@ -32,9 +30,19 @@ except sr.UnknownValueError:
     print("Google Speech Recognition could not understand audio")
 except sr.RequestError as e:
     print("Could not request results from Google Speech Recognition service; {0}".format(e))
-    
-nltk.download('punkt')
+
+# Download the nltk data if it doesn't exist
+current_user = os.getlogin()
+if not os.path.exists("C:\\Users\\" + current_user + "\\AppData\\Roaming\\nltk_data"):
+    nltk.download('punkt')
+
+# Tokenize the recognized speech   
 tokens = word_tokenize(recognized_speech)
 fdist = FreqDist(tokens)
 
+# Print the number of times the word appears in the video
 print("The word " + word + " appears " + str(fdist[word]) + " times in the video")
+
+# Delete the audio files
+os.remove(input_file)
+os.remove(output_file)
